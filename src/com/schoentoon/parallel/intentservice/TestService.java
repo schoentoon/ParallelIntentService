@@ -13,7 +13,7 @@ public class TestService extends ParallelIntentService {
   @Override
   protected void onHandleIntent(Intent intent) {
     Log.d(TAG,"onHandleIntent(Intent); Started, thread id: " + Thread.currentThread().getId());
-    Log.d(TAG,"onHandleIntent(Intent); Sleeping for 10 seconds, thread id: " + Thread.currentThread().getId());
+    Log.d(TAG,"onHandleIntent(Intent); Sleeping for 60 seconds, thread id: " + Thread.currentThread().getId());
     try {
       Thread.sleep(60 * 1000);
     } catch (InterruptedException e) {

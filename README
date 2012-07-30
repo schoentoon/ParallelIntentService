@@ -1,0 +1,3 @@
+A parallel implementation of IntentService
+
+This works exactly the same as the IntentService, except for the fact that onHandleIntent(Intent); will be called in parallel.

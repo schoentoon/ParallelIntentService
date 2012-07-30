@@ -1,0 +1,15 @@
+bin/
+gen/
+*.apk
+*.ap_
+*.dex
+*.class
+.settings
+local.properties
+.directory
+Twoons/src/com/schoentoon/twoons/TwoonsVersion.java
+Twoons/res/values/version.xml
+*.swp
+proguard
+doc/
+server/android/latest_version

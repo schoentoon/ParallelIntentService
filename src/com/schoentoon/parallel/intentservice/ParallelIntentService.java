@@ -25,8 +25,20 @@ public abstract class ParallelIntentService extends Service {
 
   private final BlockingQueue<Runnable> sPoolWorkQueue = new LinkedBlockingQueue<Runnable>(10);
 
-  private final ThreadPoolExecutor ThreadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE,
+  private final ThreadPoolExecutor ThreadPoolExecutor = new ParallelThreadPoolExecutor(CORE_POOL_SIZE,
       MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
+
+  private class ParallelThreadPoolExecutor extends ThreadPoolExecutor {
+    public ParallelThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
+        TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
+      super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
+    }
+    protected void afterExecute(Runnable r, Throwable t) {
+      super.afterExecute(r, t);
+      if (getActiveCount() == 0)
+        stopSelf();
+    }
+  }
 
   public class Task implements Runnable {
     public Task(final Intent intent) {
@@ -34,8 +46,6 @@ public abstract class ParallelIntentService extends Service {
     }
     public void run() {
       onHandleIntent(intent);
-      if (sPoolWorkQueue.isEmpty())
-        stopSelf();
     }
     private final Intent intent;
   }

@@ -23,6 +23,7 @@ public abstract class ParallelIntentService extends Service {
     }
   };
 
+  private final AtomicInteger tasks_left = new AtomicInteger(0);
   private final BlockingQueue<Runnable> sPoolWorkQueue = new LinkedBlockingQueue<Runnable>(10);
 
   private final ThreadPoolExecutor ThreadPoolExecutor = new ParallelThreadPoolExecutor(CORE_POOL_SIZE,
@@ -35,8 +36,11 @@ public abstract class ParallelIntentService extends Service {
     }
     protected void afterExecute(Runnable r, Throwable t) {
       super.afterExecute(r, t);
-      if (getActiveCount() == 0)
+      final int active_count = tasks_left.decrementAndGet();
+      if (active_count == 0)
         stopSelf();
+      else
+        tasksLeft(active_count);
     }
   }
 
@@ -81,4 +85,7 @@ public abstract class ParallelIntentService extends Service {
   }
 
   protected abstract void onHandleIntent(Intent intent);
+
+  protected void tasksLeft(int tasks_left) {
+  }
 }
